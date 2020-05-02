@@ -6,17 +6,18 @@
       <img src="../assets/image/空调.png" style="width:100px" />
       <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
       <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
-      <echarts style="position:absolute;top:40%;" :value="temperature" unit="°C" text="温度"></echarts>
+      <echarts style="position:absolute;top:40%;" :value="List.temperature" unit="°C" text="温度"></echarts>
       <div
         style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px"
       >
         <div>开启状态: {{List.changer?"开启":"关闭"}}</div>
         <div>温度： {{List.temperature}}°C</div>
-        <div>模式： {{List.temperature}}</div>
-        <div>风速： {{List.temperature}}</div>
-        <div>定时： {{List.temperature}}</div>
-        <div>电辅热： {{List.temperature}}</div>
-        <div>干燥： {{List.temperature}}</div>
+        <div>风向： {{List.sxfeng?"上下风":List.zyfeng?"左右风":"自动风"}}</div>
+        <div>模式： {{airMode[List.mode]}}</div>
+        <div>风速： {{Fspeed[List.speed]}}</div>
+        <div>定时： {{airTime[List.time]}}</div>
+        <div>电辅热： {{List.heat?"开启":"关闭"}}</div>
+        <div>干燥： {{List.dry?"开启":"关闭"}}</div>
       </div>
     </div>
     <!-- 智能电灯 -->
@@ -98,7 +99,8 @@ export default {
       lightness: 70,
       List: {},
       airMode: ["制冷模式", "制热模式", "通风模式"],
-      speed: ["小", "中", "大"],
+      Fspeed: ["小", "中", "大"],
+      airTime: ["30分钟","1小时","2小时","3小时","4小时","5小时","6小时","7小时","8小时"]
     };
   },
   computed: {

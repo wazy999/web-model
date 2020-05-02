@@ -15,7 +15,7 @@
       >
         <el-row :gutter="15">
           <el-col
-            v-for="equip in List"
+            v-for="equip in airConList"
             :key="equip.id"
             :span="8"
             style="height:320px;margin:10px 0"
@@ -30,7 +30,7 @@
               <span class="equipName">{{equip.equipName}}</span>
               <img src="../assets/image/空调.png" class="imgStyle" />
               <div class="textStyle">
-                <div>温度:{{equip.temperature}}</div>
+                <div>温度:{{equip.temperature}}°C</div>
                 <div>模式:{{airMode[equip.mode]}}</div>
                 <div>风速:{{speed[equip.speed]}}</div>
               </div>
@@ -112,6 +112,7 @@ export default {
       receiveVal: [],
       airMode: ["制冷模式", "制热模式", "通风模式"],
       speed: ["小", "中", "大"],
+      data:[],
     };
   },
   computed: {
@@ -125,9 +126,6 @@ export default {
     this.getroomList();
     this.tabValue = this.$route.query.roomName;
   },
-  updated(){
-    console.log(this.equipList,"thisequipList")
-  },
   methods: {
     ...mapMutations(["getlist"]),
     getValue(){
@@ -138,17 +136,18 @@ export default {
           ws.send(this.tabValue);
         };
         ws.onmessage = mes => {
-          console.log(JSON.parse(mes.data));
-          this.getlist(JSON.parse(mes.data));
+          console.log("接受消息",JSON.parse(mes.data))
+          this.data = JSON.parse(mes.data)
           this.equipList.forEach((item,index) => {
-            this.airConList.forEach(element => {
+            this.data.forEach(element => {
               if(element.equipName == item.equipName){
-                this.equipList[index] = {...element,...item}
+               this.$set(this.List,index,{...element,...item})
               }
             })
           });
-          this.List = this.equipList
-          console.log(this.equipList,"equipList")
+          console.log(this.List)
+           this.getlist(this.List);
+           console.log(this.airConList,"this.airConList")
         };
         ws.onclose = function() {
           console.log("连接已关闭...");
@@ -160,7 +159,9 @@ export default {
     tabClick(e) {
       console.log(e);
       this.$router.push({ path: "/equipment", query: { roomName: e.label } });
-      this.getList();
+      this.getList().then(()=>{
+      this.getValue();
+    })
     },
     tapDetail(e) {
       this.$router.push({ path: "/detail", query: { equipType: e.seleVal,name:e.name,equipName:e.equipName} });
@@ -182,8 +183,8 @@ export default {
           })
           .then(success => {
             this.equipList = success.data.inf;
+            this.List = this.equipList
             resolve();
-            console.log(this.equipList);
           });
       });
     }
