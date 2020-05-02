@@ -5,8 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    airConList:[],
   },
   mutations: {
+    getlist(state,list){
+      state.airConList = list
+    }
   },
   actions: {
   },

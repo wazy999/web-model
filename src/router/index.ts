@@ -3,14 +3,20 @@ import VueRouter from 'vue-router'
 import login from '../views/login.vue'
 import home from "../views/homePage.vue"
 import equipment from "../views/equipment.vue"
+import detail from "../views/detail.vue"
+import myechart from "../views/echart.vue"
 
 Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    redirect:"/login"
+  },
+  {
     path: '/login',
     name: 'login',
-    component: login
+    component: login,
   },
   {
     path: '/about',
@@ -29,6 +35,11 @@ const routes = [
     path: '/equipment',
     name: 'equipment',
     component: equipment
+  },
+  {
+    path: '/detail',
+    name: 'detail',
+    component: detail
   },
 ]
 
