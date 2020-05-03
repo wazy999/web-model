@@ -20,16 +20,27 @@ export default {
 
   },
   data() {
-    return {};
+    return {
+      a:"",
+    };
   },
   mounted() {
-    this.drawCir();
+    this.a = setInterval(()=>{
+       this.drawCir();
+    },1000)
+  },
+  updated(){
+    console.log(this.value,"value")
+  },
+  destroyed(){
+    clearInterval(this.a)
   },
   methods: {
     drawCir() {
       const value1 = (this.value * this.value * this.value) / 200;
       const myChart = this.$echarts.init(document.getElementById("Chart"));
-      const option = {
+      let option = "";
+       option = {
         // backgroundColor: "#000",
         tooltip: {
           trigger: "item"

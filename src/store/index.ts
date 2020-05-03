@@ -8,7 +8,7 @@ export default new Vuex.Store({
     airConList:[],
   },
   mutations: {
-    getlist(state,list){
+    getAllList(state,list){
       state.airConList = list
     }
   },

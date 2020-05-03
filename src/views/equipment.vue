@@ -127,7 +127,7 @@ export default {
     this.tabValue = this.$route.query.roomName;
   },
   methods: {
-    ...mapMutations(["getlist"]),
+    ...mapMutations(["getAllList"]),
     getValue(){
       if (window.WebSocket) {
         const ws = new WebSocket("ws://localhost:8081");
@@ -141,13 +141,11 @@ export default {
           this.equipList.forEach((item,index) => {
             this.data.forEach(element => {
               if(element.equipName == item.equipName){
-               this.$set(this.List,index,{...element,...item})
+              this.$set(this.List,index,Object.assign({},item,element))
               }
             })
           });
-          console.log(this.List)
-           this.getlist(this.List);
-           console.log(this.airConList,"this.airConList")
+           this.getAllList(this.List);
         };
         ws.onclose = function() {
           console.log("连接已关闭...");
@@ -157,9 +155,10 @@ export default {
       }
     },
     tabClick(e) {
-      console.log(e);
+      console.log(e,"e");
       this.$router.push({ path: "/equipment", query: { roomName: e.label } });
       this.getList().then(()=>{
+      this.tabValue = this.$route.query.roomName;
       this.getValue();
     })
     },
