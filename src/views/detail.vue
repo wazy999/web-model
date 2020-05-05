@@ -6,7 +6,7 @@
       <img src="../assets/image/空调.png" style="width:100px" />
       <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
       <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
-      <echarts style="position:absolute;top:40%;" :value="temperature" unit="°C" text="温度"></echarts>
+      <echarts style="position:absolute;top:40%;" :value="List.temperature" unit="°C" text="温度"></echarts>
       <div
         style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px"
       >
@@ -17,6 +17,7 @@
         <div>风速： {{Fspeed[List.speed]}}</div>
         <div>定时： {{airTime[List.time]?airTime[List.time]:"关闭"}}</div>
         <div>电辅热： {{List.heat?"开启":"关闭"}}</div>
+        <div>净化： {{List.clear?"开启":"关闭"}}</div>
         <div>干燥： {{List.dry?"开启":"关闭"}}</div>
       </div>
     </div>
@@ -25,13 +26,19 @@
       <img src="../assets/image/电灯.png" style="width:100px" />
       <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
       <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
-      <echarts style="position:absolute;top:40%;" :value="lightness" unit="%" text="亮度"></echarts>
+      <echarts
+        style="position:absolute;top:40%;"
+        :value="lightness[List.lightness]"
+        unit="%"
+        text="亮度"
+      ></echarts>
       <div
         style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px"
       >
-        <div>开启状态: 开启</div>
-        <div>亮度： {{lightness}}</div>
-        <div>颜色：红色</div>
+        <div>开启状态: {{List.changer?"开启":"关闭"}}</div>
+        <div>模式： {{lampMode[List.mode]}}</div>
+        <div>亮度： {{lightness[List.lightness]}}%</div>
+        <div>颜色：{{color[List.color]}}</div>
       </div>
     </div>
     <!-- 智能热水器 -->
@@ -43,14 +50,15 @@
       <div
         style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px"
       >
-        <div>开启状态: 开启</div>
-        <div>温度设置： 24°C</div>
-        <div>实际温度： 制冷运行</div>
-        <div>热水量： 小风</div>
-        <div>高温抑菌： 关闭</div>
-        <div>无电洗： 关闭</div>
-        <div>预约： 关闭</div>
-        <div>半胆速热： 关闭</div>
+        <div>开启状态: {{List.changer?"开启":"关闭"}}</div>
+        <div>温度设置： {{List.temperature}}°</div>
+        <div>热水量： 100%</div>
+        <div>高温抑菌：{{List.highTem?"开启":"关闭"}}</div>
+        <div>无电洗： {{List.noEletri?"开启":"关闭"}}</div>
+        <div>e+增容： {{List.ezeng?"开启":"关闭"}}</div>
+        <div>云管家： {{List.cloud?"开启":"关闭"}}</div>
+        <div>预约： {{time?time:"关闭"}}</div>
+        <div>半胆速热： {{List.fastHeat?"开启":"关闭"}}</div>
       </div>
     </div>
     <!-- 智能门锁 -->
@@ -61,9 +69,9 @@
       <div
         style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px;transform:translateX(-50%)"
       >
-        <div>开启状态: 开启</div>
-        <div>摄像头： 24°C</div>
-        <div>语音通话： 制冷运行</div>
+        <div>开启状态: {{List.changer?"开启":"关闭"}}</div>
+        <div>摄像头： {{List.camera?"开启":"关闭"}}</div>
+        <div>语音通话： {{List.sound?"开启":"关闭"}}</div>
       </div>
     </div>
     <!-- 智能音响 -->
@@ -71,12 +79,14 @@
       <img src="../assets/image/音箱.png" style="width:100px" />
       <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
       <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
+      <audio :src="List.songurl" ref="audio" autoplay loop></audio>
+      <img :src="List.img" alt width="300px" style="position:absolute;top:40%;left:20%" />
       <div
-        style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px;transform:translateX(-50%)"
+        style="position:absolute;top:48%;left:60%;line-height:40px;text-align:left;font-size:20px;transform:translateX(-50%)"
       >
-        <div>开启状态: 开启</div>
-        <div>模式： 音乐播放</div>
-        <div>当前播放： 小风</div>
+        <div>开启状态: {{List.changer?"开启":"关闭"}}</div>
+        <div>模式： {{List.child?"儿童模式":musicMode[List.mode]}}</div>
+        <div>当前播放：{{List.songName}}</div>
       </div>
     </div>
   </div>
@@ -91,6 +101,7 @@ export default {
   },
   data() {
     return {
+      time: "",
       data: "",
       equipList: "",
       equipType: "",
@@ -98,11 +109,11 @@ export default {
         "智能空调是具有自动调节功能的空调。智能空调系统能根据外界气候条件，按照预先设定的指标对温度、湿度、空气清洁度传感器所传来的信号进行分析、判断、及时自动打开制冷、加热、去湿及空气净化等功能的空调。适合放在卧室，客厅等地方。最低温度16摄氏，最高26，27度",
       temperature: 20,
       waterTemp: 20,
-      lightness: 70,
       List: {},
       List2: [],
       airMode: ["制冷模式", "制热模式", "通风模式"],
       Fspeed: ["小", "中", "大"],
+      musicMode: ["播放音乐", "收音机", "智能助手"],
       airTime: [
         "30分钟",
         "1小时",
@@ -113,19 +124,39 @@ export default {
         "6小时",
         "7小时",
         "8小时"
-      ]
+      ],
+      color: ["黄色", "白色", "红色", "青色"],
+      lightness: [10, 30, 50, 70, 80, 90, 100],
+      lampMode: ["护眼模式", "普通模式", "睡眠模式"]
     };
   },
   computed: {
     ...mapState(["airConList"])
   },
   mounted() {
+    this.$nextTick(() => {
+      if (this.List.play && this.List.changer) {
+        this.$refs.audio.play();
+      } else {
+        this.$refs.audio.pause();
+      }
+      const play = setInterval(() => {
+        if (this.List.play && this.List.changer) {
+          this.$refs.audio.play();
+        } else {
+          this.$refs.audio.pause();
+        }
+      }, 2000);
+    });
     this.getList().then(() => {
       this.getValue();
     });
     this.equipType = this.$route.query.equipType;
     this.airForeach();
     console.log(this.airConList, "this.airConList");
+    this.time = this.List.week
+      ? this.List.week + ":" + this.List.startTime + "~" + this.List.endTime
+      : "今天：" + this.List.startTime + "~" + this.List.endTime;
   },
   methods: {
     ...mapMutations(["getAllList"]),

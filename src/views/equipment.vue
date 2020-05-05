@@ -5,18 +5,18 @@
       :tab-position="tabPosition"
       style="height: 100vh;"
       @tab-click="tabClick"
-      :value="tabValue"
+      :value="tabValue "
     >
       <el-tab-pane
         :label="item.roomName"
         :name="item.roomName"
         v-for="item in roomList"
-        :key="item.id"
+        :key="item.id "
       >
         <el-row :gutter="15">
           <el-col
             v-for="equip in airConList"
-            :key="equip.id"
+            :key="equip.equipName "
             :span="8"
             style="height:320px;margin:10px 0"
           >
@@ -37,7 +37,7 @@
             </div>
             <div class="Card" v-if="equip.seleVal == '智能电灯'" @click="tapDetail(equip)">
               <el-switch
-                v-model="value"
+                :value="equip.changer?true:false"
                 active-color="#13ce66"
                 inactive-color="gray"
                 :disabled="true"
@@ -45,12 +45,13 @@
               <span class="equipName">{{equip.equipName}}</span>
               <img src="../assets/image/电灯.png" class="imgStyle" />
               <div class="textStyle">
-                <div>亮度</div>
+                <div>亮度:{{lightness[equip.lightness]}}%</div>
+                <div>颜色:{{color[equip.color]}}</div>
               </div>
             </div>
             <div class="Card" v-if="equip.seleVal == '智能热水器'" @click="tapDetail(equip)">
               <el-switch
-                v-model="value"
+                :value="equip.changer?true:false"
                 active-color="#13ce66"
                 inactive-color="gray"
                 :disabled="true"
@@ -58,14 +59,14 @@
               <span class="equipName">{{equip.equipName}}</span>
               <img src="../assets/image/热水器.png" class="imgStyle" />
               <div class="textStyle">
-                <div>温度设置</div>
-                <div>实际温度</div>
-                <div>预约时间</div>
+                <div>温度设置:{{equip.temperature}}°</div>
+                <div>高温抑菌:{{equip.highTem?"开启":"关闭"}}</div>
+                <div>预约时间：{{equip.week?equip.week+":"+equip.startTime+"~"+equip.endTime:'今天'+":"+equip.startTime+"~"+equip.endTime}}</div>
               </div>
             </div>
             <div class="Card" v-if="equip.seleVal == '智能门锁'" @click="tapDetail(equip)">
               <el-switch
-                v-model="value"
+                :value="equip.changer?true:false"
                 active-color="#13ce66"
                 inactive-color="gray"
                 :disabled="true"
@@ -73,13 +74,13 @@
               <span class="equipName">{{equip.equipName}}</span>
               <img src="../assets/image/智能门锁.png" class="imgStyle" />
               <div class="textStyle">
-                <div>摄像头</div>
-                <div>语音通话</div>
+                <div>摄像头:{{equip.camera?"开启":"关闭"}}</div>
+                <div>语音通话：{{equip.sound?"开启":"关闭"}}</div>
               </div>
             </div>
             <div class="Card" v-if="equip.seleVal == '智能音响'" @click="tapDetail(equip)">
               <el-switch
-                v-model="value"
+                :value="equip.changer?true:false"
                 active-color="#13ce66"
                 inactive-color="gray"
                 :disabled="true"
@@ -87,8 +88,8 @@
               <span class="equipName">{{equip.equipName}}</span>
               <img src="../assets/image/音箱.png" class="imgStyle" />
               <div class="textStyle">
-                <div>当前模式</div>
-                <div>当前播放</div>
+                <div>当前模式：{{equip.child?"儿童模式":musicMode[equip.mode]}}</div>
+                <div>当前播放：{{equip.songName}}</div>
               </div>
             </div>
           </el-col>
@@ -106,29 +107,32 @@ export default {
       tabPosition: "left",
       equipList: [],
       roomList: [],
-      List:[],
+      List: [],
       value: false,
       tabValue: "",
       receiveVal: [],
       airMode: ["制冷模式", "制热模式", "通风模式"],
       speed: ["小", "中", "大"],
-      data:[],
+      data: [],
+      musicMode: ["播放音乐", "收音机", "智能助手"],
+      color: ["黄色", "白色", "红色", "青色"],
+      lightness: [10,30,50,70,80,90,100],
+      lampMode: ["护眼模式", "普通模式", "睡眠模式"]
     };
   },
   computed: {
     ...mapState(["airConList"])
   },
   mounted() {
-    this.getList().then(()=>{
+    this.getList().then(() => {
       this.getValue();
-    }
-    );
+    });
     this.getroomList();
     this.tabValue = this.$route.query.roomName;
   },
   methods: {
     ...mapMutations(["getAllList"]),
-    getValue(){
+    getValue() {
       if (window.WebSocket) {
         const ws = new WebSocket("ws://localhost:8081");
         ws.onopen = message => {
@@ -136,16 +140,16 @@ export default {
           ws.send(this.tabValue);
         };
         ws.onmessage = mes => {
-          console.log("接受消息",JSON.parse(mes.data))
-          this.data = JSON.parse(mes.data)
-          this.equipList.forEach((item,index) => {
+          console.log("接受消息", JSON.parse(mes.data));
+          this.data = JSON.parse(mes.data);
+          this.equipList.forEach((item, index) => {
             this.data.forEach(element => {
-              if(element.equipName == item.equipName){
-              this.$set(this.List,index,Object.assign({},item,element))
+              if (element.equipName == item.equipName) {
+                this.$set(this.List, index, Object.assign({}, item, element));
               }
-            })
+            });
           });
-           this.getAllList(this.List);
+          this.getAllList(this.List);
         };
         ws.onclose = function() {
           console.log("连接已关闭...");
@@ -155,15 +159,18 @@ export default {
       }
     },
     tabClick(e) {
-      console.log(e,"e");
+      console.log(e, "e");
       this.$router.push({ path: "/equipment", query: { roomName: e.label } });
-      this.getList().then(()=>{
-      this.tabValue = this.$route.query.roomName;
-      this.getValue();
-    })
+      this.getList().then(() => {
+        this.tabValue = this.$route.query.roomName;
+        this.getValue();
+      });
     },
     tapDetail(e) {
-      this.$router.push({ path: "/detail", query: { equipType: e.seleVal,name:e.name,equipName:e.equipName} });
+      this.$router.push({
+        path: "/detail",
+        query: { equipType: e.seleVal, name: e.name, equipName: e.equipName }
+      });
       console.log("aa");
     },
     goBack() {
@@ -175,14 +182,14 @@ export default {
       });
     },
     getList() {
-      return new Promise((resolve, reject)=> {
+      return new Promise((resolve, reject) => {
         this.$axios
           .post("http://localhost:3000/room/equipmentlist", {
             name: this.$route.query.roomName
           })
           .then(success => {
             this.equipList = success.data.inf;
-            this.List = this.equipList
+            this.List = this.equipList;
             resolve();
           });
       });

@@ -25,7 +25,7 @@ function getTime(){
 }
 function getDate(){
     const year = new Date().getFullYear();
-    const month = new Date().getMonth() - 1;
+    const month = new Date().getMonth() + 1;
     const day = new Date().getDate();
     return year + "年" + month + "月" + day + "日"
 }
