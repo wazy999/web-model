@@ -10,8 +10,8 @@
     <!-- 智能空调 -->
     <div v-if="equipType == '智能空调'">
       <img src="../assets/image/空调.png" style="width:100px" />
-      <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
-      <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
+      <p style="font-size:30px;font-weight:blod">—— 美的智能空调介绍 ——</p>
+      <p style="margin:0 100px;text-align:left;text-indent:32px">{{Meidiintroduct}}</p>
       <echarts style="position:absolute;top:40%;" :value="List.temperature" unit="°C" text="温度"></echarts>
       <div
         style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px"
@@ -31,7 +31,7 @@
     <div v-if="equipType == '智能电灯'">
       <img src="../assets/image/电灯.png" style="width:100px" />
       <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
-      <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
+      <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>    
       <echarts
         style="position:absolute;top:40%;"
         :value="lightness[List.lightness]"
@@ -51,10 +51,10 @@
     <div v-if="equipType == '智能热水器'">
       <img src="../assets/image/热水器.png" style="width:100px" />
       <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
-      <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
-      <echarts style="position:absolute;top:40%;" :value="waterTemp" unit="°" text="温度"></echarts>
+      <video src="http://video.mdcdn.cn/ImageStore/170106/video/16ecf8a1624d8651d00d9868ba2310c4_conv.mp4" style="margin:0 100px;text-align:left;text-indent:32px;width:400px" autoplay loop controls></video>
+      <echarts style="position:absolute;top:50%;left:10%" :value="List.temperature" unit="°" text="温度"></echarts>
       <div
-        style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px"
+        style="position:absolute;top:55%;left:50%;line-height:40px;text-align:left;font-size:20px"
       >
         <div>开启状态: {{List.changer?"开启":"关闭"}}</div>
         <div>温度设置： {{List.temperature}}°</div>
@@ -71,9 +71,10 @@
     <div v-if="equipType == '智能门锁'">
       <img src="../assets/image/智能门锁.png" style="width:100px" />
       <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
-      <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
+      <video src="http://cloud.video.taobao.com/play/u/2200777838130/p/1/e/6/t/1/259844259372.mp4" style="margin:0 100px;text-align:left;text-indent:32px;width:400px" autoplay loop controls></video>
+
       <div
-        style="position:absolute;top:48%;left:50%;line-height:40px;text-align:left;font-size:20px;transform:translateX(-50%)"
+        style="position:absolute;top:60%;left:50%;line-height:40px;text-align:left;font-size:20px;transform:translateX(-50%)"
       >
         <div>开启状态: {{List.changer?"开启":"关闭"}}</div>
         <div>摄像头： {{List.camera?"开启":"关闭"}}</div>
@@ -84,11 +85,11 @@
     <div v-if="equipType == '智能音响'">
       <img src="../assets/image/音箱.png" style="width:100px" />
       <p style="font-size:30px;font-weight:blod">—— 产品介绍 ——</p>
-      <p style="margin:0 100px;text-align:left;text-indent:32px">{{introduct}}</p>
+      <video src="https://product-online.cdn.bcebos.com/1587374553397854.mp4" style="margin:0 100px;text-align:left;text-indent:32px;width:400px" autoplay loop controls></video>
       <audio :src="List.songurl" ref="audio" autoplay loop></audio>
-      <img :src="List.img" alt width="300px" style="position:absolute;top:40%;left:20%" />
+      <img :src="List.img" alt width="200px" style="position:absolute;top:60%;left:30%" />
       <div
-        style="position:absolute;top:48%;left:60%;line-height:40px;text-align:left;font-size:20px;transform:translateX(-50%)"
+        style="position:absolute;top:60%;left:60%;line-height:40px;text-align:left;font-size:20px;transform:translateX(-50%)"
       >
         <div>开启状态: {{List.changer?"开启":"关闭"}}</div>
         <div>模式： {{List.child?"儿童模式":musicMode[List.mode]}}</div>
@@ -112,9 +113,11 @@ export default {
       data: "",
       equipList: "",
       equipType: "",
-      introduct:
-        "智能空调是具有自动调节功能的空调。智能空调系统能根据外界气候条件，按照预先设定的指标对温度、湿度、空气清洁度传感器所传来的信号进行分析、判断、及时自动打开制冷、加热、去湿及空气净化等功能的空调。适合放在卧室，客厅等地方。最低温度16摄氏，最高26，27度",
       temperature: 20,
+       introduct:
+      "智能灯泡，是新的灯泡产品形式。采用嵌入式物联网核心技术，将互通核心模块嵌入到节能灯泡。互联网无处不在的催生，随时随地的互通、互动的时代特征影响到节能灯泡产品的发展和演变，以led照明灯泡设计为主流，同时充分体现节能化、健康化、艺术化和人性化的照明发展趋势，成为居室灯光文化的主导。",
+      Meidiintroduct:
+      "美的智能空调是具有自动调节功能的空调。智能空调系统能根据外界气候条件，按照预先设定的指标对温度、湿度、空气清洁度传感器所传来的信号进行分析、判断、及时自动打开制冷、加热、去湿及空气净化等功能的空调。适合放在卧室，客厅等地方。最低温度16摄氏，最高26，27度",
       waterTemp: 20,
       List: {},
       List2: [],
@@ -161,9 +164,9 @@ export default {
     this.equipType = this.$route.query.equipType;
     this.airForeach();
     console.log(this.airConList, "this.airConList");
-    this.time = this.List.week
+    this.time = this.List.startTime?this.List.week
       ? this.List.week + ":" + this.List.startTime + "~" + this.List.endTime
-      : "今天：" + this.List.startTime + "~" + this.List.endTime;
+      : "今天：" + this.List.startTime + "~" + this.List.endTime:"关闭";
   },
   methods: {
     ...mapMutations(["getAllList"]),
