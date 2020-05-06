@@ -1,5 +1,11 @@
 <template>
-  <div style="background:#1a1a1a;color:white;height:100vh;">
+  <div
+    style="background:#1a1a1a;color:white;height:100vh;"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <el-page-header @back="goBack" :content="equipType"></el-page-header>
     <!-- 智能空调 -->
     <div v-if="equipType == '智能空调'">
@@ -102,6 +108,7 @@ export default {
   data() {
     return {
       time: "",
+      loading:true,
       data: "",
       equipList: "",
       equipType: "",
@@ -174,6 +181,7 @@ export default {
       });
     },
     getList() {
+      this.loading = true
       return new Promise((resolve, reject) => {
         this.$axios
           .post("http://localhost:3000/room/equipmentlist", {
@@ -182,6 +190,7 @@ export default {
           .then(success => {
             this.equipList = success.data.inf;
             this.List2 = this.equipList;
+            this.loading = false
             resolve();
           });
       });
@@ -191,9 +200,10 @@ export default {
         const ws = new WebSocket("ws://localhost:8081");
         ws.onopen = message => {
           console.log("连接服务器成功" + message);
-          ws.send(this.$route.query.name);
+          ws.send(this.$route.query.name); 
         };
         ws.onmessage = mes => {
+           this.loading = true
           console.log("接受消息", JSON.parse(mes.data));
           this.data = JSON.parse(mes.data);
           console.log(this.data, this.equipList, "this.equipList");
@@ -206,6 +216,7 @@ export default {
           });
           this.getAllList(this.List2);
           this.airForeach();
+           this.loading = false
         };
         ws.onclose = function() {
           console.log("连接已关闭...");

@@ -6,6 +6,10 @@
       style="height: 100vh;"
       @tab-click="tabClick"
       :value="tabValue "
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
     >
       <el-tab-pane
         :label="item.roomName"
@@ -61,7 +65,7 @@
               <div class="textStyle">
                 <div>温度设置:{{equip.temperature}}°</div>
                 <div>高温抑菌:{{equip.highTem?"开启":"关闭"}}</div>
-                <div>预约时间：{{equip.week?equip.week+":"+equip.startTime+"~"+equip.endTime:'今天'+":"+equip.startTime+"~"+equip.endTime}}</div>
+                <div>预约时间：{{equip.startTime?equip.week?equip.week+":"+equip.startTime+"~"+equip.endTime:'今天'+":"+equip.startTime+"~"+equip.endTime:"关闭"}}</div>
               </div>
             </div>
             <div class="Card" v-if="equip.seleVal == '智能门锁'" @click="tapDetail(equip)">
@@ -105,6 +109,7 @@ export default {
   data() {
     return {
       tabPosition: "left",
+      loading: true,
       equipList: [],
       roomList: [],
       List: [],
@@ -116,7 +121,7 @@ export default {
       data: [],
       musicMode: ["播放音乐", "收音机", "智能助手"],
       color: ["黄色", "白色", "红色", "青色"],
-      lightness: [10,30,50,70,80,90,100],
+      lightness: [10, 30, 50, 70, 80, 90, 100],
       lampMode: ["护眼模式", "普通模式", "睡眠模式"]
     };
   },
@@ -133,6 +138,7 @@ export default {
   methods: {
     ...mapMutations(["getAllList"]),
     getValue() {
+      this.loading = true;
       if (window.WebSocket) {
         const ws = new WebSocket("ws://localhost:8081");
         ws.onopen = message => {
@@ -150,6 +156,7 @@ export default {
             });
           });
           this.getAllList(this.List);
+          this.loading = false;
         };
         ws.onclose = function() {
           console.log("连接已关闭...");
